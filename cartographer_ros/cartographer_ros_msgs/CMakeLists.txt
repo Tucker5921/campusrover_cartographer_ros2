@@ -44,6 +44,7 @@ add_service_files(
     WriteState.srv
     MapLoad.srv
     DeleteTrajectory.srv
+    StratTrajectoryFromFile.srv
 )
 
 generate_messages(

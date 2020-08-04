@@ -27,23 +27,26 @@
 #include "cartographer_ros_msgs/StartTrajectory.h"
 #include "cartographer_ros_msgs/StatusCode.h"
 #include "cartographer_ros_msgs/TrajectoryOptions.h"
+#include "cartographer_ros_msgs/StratTrajectoryFromFile.h"
 #include "gflags/gflags.h"
 #include "ros/ros.h"
 
-DEFINE_string(configuration_directory, "",
-              "First directory in which configuration files are searched, "
-              "second is always the Cartographer installation to allow "
-              "including files from there.");
-DEFINE_string(configuration_basename, "",
-              "Basename, i.e. not containing any directory prefix, of the "
-              "configuration file.");
+// DEFINE_string(configuration_directory, "",
+//               "First directory in which configuration files are searched, "
+//               "second is always the Cartographer installation to allow "
+//               "including files from there.");
+// DEFINE_string(configuration_basename, "",
+//               "Basename, i.e. not containing any directory prefix, of the "
+//               "configuration file.");
 
-DEFINE_string(initial_pose, "", "Starting pose of a new trajectory");
+// DEFINE_string(initial_pose, "", "Starting pose of a new trajectory");
 
 namespace cartographer_ros {
 namespace {
 
-TrajectoryOptions LoadOptions() {
+TrajectoryOptions LoadOptions(std::string FLAGS_configuration_directory, 
+                              std::string FLAGS_configuration_basename, 
+                              std::string FLAGS_initial_pose ) {
   auto file_resolver = cartographer::common::make_unique<
       cartographer::common::ConfigurationFileResolver>(
       std::vector<std::string>{FLAGS_configuration_directory});
@@ -68,13 +71,15 @@ TrajectoryOptions LoadOptions() {
   }
 }
 
-bool Run() {
+bool Run(std::string configuration_directory, 
+         std::string configuration_basename,
+         std::string initial_pose ) {
   ros::NodeHandle node_handle;
   ros::ServiceClient client =
       node_handle.serviceClient<cartographer_ros_msgs::StartTrajectory>(
           kStartTrajectoryServiceName);
   cartographer_ros_msgs::StartTrajectory srv;
-  srv.request.options = ToRosMessage(LoadOptions());
+  srv.request.options = ToRosMessage(LoadOptions(configuration_directory, configuration_basename, initial_pose));
   srv.request.topics.laser_scan_topic = node_handle.resolveName(
       kLaserScanTopic, true /* apply topic remapping */);
   srv.request.topics.multi_echo_laser_scan_topic =
@@ -102,7 +107,12 @@ bool Run() {
 
 }  // namespace
 }  // namespace cartographer_ros
-
+bool StartTrajectoryServiceCallback(
+    cartographer_ros_msgs::StratTrajectoryFromFile::Request  &req, 
+    cartographer_ros_msgs::StratTrajectoryFromFile::Response &res)
+{
+  return cartographer_ros::Run(req.configuration_directory, req.configuration_basename, req.initial_pose);
+}
 int main(int argc, char** argv) {
   google::InitGoogleLogging(argv[0]);
   google::SetUsageMessage(
@@ -112,16 +122,19 @@ int main(int argc, char** argv) {
       "using its settings.\n");
   google::ParseCommandLineFlags(&argc, &argv, true);
 
-  CHECK(!FLAGS_configuration_directory.empty())
-      << "-configuration_directory is missing.";
-  CHECK(!FLAGS_configuration_basename.empty())
-      << "-configuration_basename is missing.";
+  // CHECK(!FLAGS_configuration_directory.empty())
+  //     << "-configuration_directory is missing.";
+  // CHECK(!FLAGS_configuration_basename.empty())
+  //     << "-configuration_basename is missing.";
 
   ::ros::init(argc, argv, "cartographer_start_trajectory");
-  ::ros::start();
+  ::ros::NodeHandle nh;
+  ::ros::ServiceServer start_trajectory_service = nh.advertiseService("cr_start_trajectory", StartTrajectoryServiceCallback);
+  // ::ros::start();
 
   cartographer_ros::ScopedRosLogSink ros_log_sink;
-  int exit_code = cartographer_ros::Run() ? 0 : 1;
-  ::ros::shutdown();
-  return exit_code;
+  // int exit_code = cartographer_ros::Run() ? 0 : 1;
+  // ::ros::shutdown();
+  ::ros::spin();
+  return 0;
 }
