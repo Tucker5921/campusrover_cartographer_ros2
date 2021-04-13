@@ -15,6 +15,7 @@
  */
 
 #include "cartographer/mapping/internal/2d/scan_matching/occupied_space_cost_function_2d.h"
+
 #include "cartographer/mapping/probability_values.h"
 #include "ceres/cubic_interpolation.h"
 
@@ -49,8 +50,9 @@ class OccupiedSpaceCostFunction2D {
 
     for (size_t i = 0; i < point_cloud_.size(); ++i) {
       // Note that this is a 2D point. The third component is a scaling factor.
-      const Eigen::Matrix<T, 3, 1> point((T(point_cloud_[i].x())),
-                                         (T(point_cloud_[i].y())), T(1.));
+      const Eigen::Matrix<T, 3, 1> point((T(point_cloud_[i].position.x())),
+                                         (T(point_cloud_[i].position.y())),
+                                         T(1.));
       const Eigen::Matrix<T, 3, 1> world = transform * point;
       interpolator.Evaluate(
           (limits.max().x() - world[0]) / limits.resolution() - 0.5 +

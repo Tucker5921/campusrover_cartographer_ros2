@@ -20,7 +20,7 @@
 #include <string>
 #include <tuple>
 
-#include "cartographer/common/make_unique.h"
+#include "absl/memory/memory.h"
 #include "cartographer/common/time.h"
 #include "cartographer/sensor/collator_interface.h"
 #include "cartographer/sensor/imu_data.h"
@@ -76,7 +76,7 @@ struct CollatorInput {
   }
 
   const int trajectory_id;
-  std::unique_ptr<sensor::Data> data;
+  std::unique_ptr<Data> data;
   const CollatorOutput expected_output;
 };
 

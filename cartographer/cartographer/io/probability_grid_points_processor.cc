@@ -17,8 +17,8 @@
 #include "cartographer/io/probability_grid_points_processor.h"
 
 #include "Eigen/Core"
+#include "absl/memory/memory.h"
 #include "cartographer/common/lua_parameter_dictionary.h"
-#include "cartographer/common/make_unique.h"
 #include "cartographer/common/math.h"
 #include "cartographer/io/draw_trajectories.h"
 #include "cartographer/io/image.h"
@@ -36,14 +36,15 @@ void DrawTrajectoriesIntoImage(
     const std::vector<mapping::proto::Trajectory>& trajectories,
     cairo_surface_t* cairo_surface) {
   for (size_t i = 0; i < trajectories.size(); ++i) {
-    DrawTrajectory(trajectories[i], GetColor(i),
-                   [&probability_grid,
-                    &offset](const transform::Rigid3d& pose) -> Eigen::Array2i {
-                     return probability_grid.limits().GetCellIndex(
-                                pose.cast<float>().translation().head<2>()) -
-                            offset;
-                   },
-                   cairo_surface);
+    DrawTrajectory(
+        trajectories[i], GetColor(i),
+        [&probability_grid,
+         &offset](const transform::Rigid3d& pose) -> Eigen::Array2i {
+          return probability_grid.limits().GetCellIndex(
+                     pose.cast<float>().translation().head<2>()) -
+                 offset;
+        },
+        cairo_surface);
   }
 }
 
@@ -91,7 +92,8 @@ ProbabilityGridPointsProcessor::ProbabilityGridPointsProcessor(
       file_writer_(std::move(file_writer)),
       next_(next),
       range_data_inserter_(probability_grid_range_data_inserter_options),
-      probability_grid_(CreateProbabilityGrid(resolution)) {
+      probability_grid_(
+          CreateProbabilityGrid(resolution, &conversion_tables_)) {
   LOG_IF(WARNING, output_type == OutputType::kPb &&
                       draw_trajectories_ == DrawTrajectories::kYes)
       << "Drawing the trajectories is not supported when writing the "
@@ -112,7 +114,7 @@ ProbabilityGridPointsProcessor::FromDictionary(
       dictionary->HasKey("output_type")
           ? OutputTypeFromString(dictionary->GetString("output_type"))
           : OutputType::kPng;
-  return common::make_unique<ProbabilityGridPointsProcessor>(
+  return absl::make_unique<ProbabilityGridPointsProcessor>(
       dictionary->GetDouble("resolution"),
       mapping::CreateProbabilityGridRangeDataInserterOptions2D(
           dictionary->GetDictionary("range_data_inserter").get()),
@@ -124,8 +126,9 @@ ProbabilityGridPointsProcessor::FromDictionary(
 
 void ProbabilityGridPointsProcessor::Process(
     std::unique_ptr<PointsBatch> batch) {
-  range_data_inserter_.Insert({batch->origin, batch->points, {}},
-                              &probability_grid_);
+  range_data_inserter_.Insert(
+      {batch->origin, sensor::PointCloud(batch->points), {}},
+      &probability_grid_);
   next_->Process(std::move(batch));
 }
 
@@ -177,8 +180,8 @@ std::unique_ptr<Image> DrawProbabilityGrid(
     LOG(WARNING) << "Not writing output: empty probability grid";
     return nullptr;
   }
-  auto image = common::make_unique<Image>(cell_limits.num_x_cells,
-                                          cell_limits.num_y_cells);
+  auto image = absl::make_unique<Image>(cell_limits.num_x_cells,
+                                        cell_limits.num_y_cells);
   for (const Eigen::Array2i& xy_index :
        mapping::XYIndexRangeIterator(cell_limits)) {
     const Eigen::Array2i index = xy_index + *offset;
@@ -192,14 +195,17 @@ std::unique_ptr<Image> DrawProbabilityGrid(
   return image;
 }
 
-mapping::ProbabilityGrid CreateProbabilityGrid(const double resolution) {
+mapping::ProbabilityGrid CreateProbabilityGrid(
+    const double resolution,
+    mapping::ValueConversionTables* conversion_tables) {
   constexpr int kInitialProbabilityGridSize = 100;
   Eigen::Vector2d max =
       0.5 * kInitialProbabilityGridSize * resolution * Eigen::Vector2d::Ones();
   return mapping::ProbabilityGrid(
       mapping::MapLimits(resolution, max,
                          mapping::CellLimits(kInitialProbabilityGridSize,
-                                             kInitialProbabilityGridSize)));
+                                             kInitialProbabilityGridSize)),
+      conversion_tables);
 }
 
 }  // namespace io

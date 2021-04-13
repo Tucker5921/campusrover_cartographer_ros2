@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
+#include "cartographer/io/proto_stream_deserializer.h"
+
 #include <memory>
 
 #include "cartographer/io/internal/in_memory_proto_stream.h"
-#include "cartographer/io/proto_stream_deserializer.h"
-#include "cartographer/io/testing/test_helpers.h"
+#include "cartographer/io/internal/testing/test_helpers.h"
 #include "glog/logging.h"
 #include "gmock/gmock.h"
 #include "google/protobuf/text_format.h"
@@ -29,7 +30,6 @@ namespace cartographer {
 namespace io {
 namespace {
 
-using ::cartographer::common::make_unique;
 using ::cartographer::io::testing::ProtoFromStringOrDie;
 using ::cartographer::io::testing::ProtoReaderFromStrings;
 using ::cartographer::mapping::proto::SerializationHeader;
@@ -134,7 +134,7 @@ TEST_F(ProtoStreamDeserializerTest, WorksOnGoldenTextStream) {
 TEST_F(ProtoStreamDeserializerTest, FailsIfVersionNotSupported) {
   reader_ =
       ProtoReaderFromStrings(kUnsupportedSerializationHeaderProtoString, {});
-  EXPECT_DEATH(common::make_unique<ProtoStreamDeserializer>(reader_.get()),
+  EXPECT_DEATH(absl::make_unique<ProtoStreamDeserializer>(reader_.get()),
                "Unsupported serialization format");
 }
 

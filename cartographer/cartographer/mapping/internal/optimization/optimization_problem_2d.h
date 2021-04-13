@@ -94,11 +94,26 @@ class OptimizationProblem2D
     return landmark_data_;
   }
   const sensor::MapByTime<sensor::ImuData>& imu_data() const override {
-    return imu_data_;
+    return empty_imu_data_;
   }
   const sensor::MapByTime<sensor::OdometryData>& odometry_data()
       const override {
     return odometry_data_;
+  }
+
+  void AddFixedFramePoseData(
+      int trajectory_id,
+      const sensor::FixedFramePoseData& fixed_frame_pose_data);
+  void SetTrajectoryData(
+      int trajectory_id,
+      const PoseGraphInterface::TrajectoryData& trajectory_data);
+  const sensor::MapByTime<sensor::FixedFramePoseData>& fixed_frame_pose_data()
+      const {
+    return fixed_frame_pose_data_;
+  }
+  const std::map<int, PoseGraphInterface::TrajectoryData>& trajectory_data()
+      const {
+    return trajectory_data_;
   }
 
  private:
@@ -113,8 +128,10 @@ class OptimizationProblem2D
   MapById<NodeId, NodeSpec2D> node_data_;
   MapById<SubmapId, SubmapSpec2D> submap_data_;
   std::map<std::string, transform::Rigid3d> landmark_data_;
-  sensor::MapByTime<sensor::ImuData> imu_data_;
+  sensor::MapByTime<sensor::ImuData> empty_imu_data_;
   sensor::MapByTime<sensor::OdometryData> odometry_data_;
+  sensor::MapByTime<sensor::FixedFramePoseData> fixed_frame_pose_data_;
+  std::map<int, PoseGraphInterface::TrajectoryData> trajectory_data_;
 };
 
 }  // namespace optimization
