@@ -133,6 +133,13 @@ Node::Node(
       kGetTrajectoryStatesServiceName, &Node::HandleGetTrajectoryStates, this));
   service_servers_.push_back(node_handle_.advertiseService(
       kReadMetricsServiceName, &Node::HandleReadMetrics, this));
+  // CampusRover
+  service_servers_.push_back(node_handle_.advertiseService(
+      kMapLoadServiceName, &Node::HandleMapLoad, this));
+  service_servers_.push_back(node_handle_.advertiseService(
+      kStartTrajectoryFromFileName, &Node::HandleStratTrajectoryFromFile, this));
+  service_servers_.push_back(node_handle_.advertiseService(
+      kDeleteTrajectoryName, &Node::HandleDeleteTrajectory, this));
 
   scan_matched_point_cloud_publisher_ =
       node_handle_.advertise<sensor_msgs::PointCloud2>(
@@ -724,6 +731,58 @@ bool Node::HandleReadMetrics(
   response.status.message = "Successfully read metrics.";
   return true;
 }
+
+bool Node::HandleMapLoad(
+    ::cartographer_ros_msgs::MapLoad::Request& request,
+    ::cartographer_ros_msgs::MapLoad::Response& response) {
+  std::cout << "HandleMapLoad" << std::endl;
+  // absl::MutexLock lock(&mutex_);
+  // response.timestamp = ros::Time::now();
+  // if (!metrics_registry_) {
+  //   response.status.code = cartographer_ros_msgs::StatusCode::UNAVAILABLE;
+  //   response.status.message = "Collection of runtime metrics is not activated.";
+  //   return true;
+  // }
+  // metrics_registry_->ReadMetrics(&response);
+  // response.status.code = cartographer_ros_msgs::StatusCode::OK;
+  // response.status.message = "Successfully read metrics.";
+  return true;
+}
+
+bool Node::HandleStratTrajectoryFromFile(
+    ::cartographer_ros_msgs::StratTrajectoryFromFile::Request& request,
+    ::cartographer_ros_msgs::StratTrajectoryFromFile::Response& response) {
+  std::cout << "HandleStratTrajectoryFromFile" << std::endl;
+  // absl::MutexLock lock(&mutex_);
+  // response.timestamp = ros::Time::now();
+  // if (!metrics_registry_) {
+  //   response.status.code = cartographer_ros_msgs::StatusCode::UNAVAILABLE;
+  //   response.status.message = "Collection of runtime metrics is not activated.";
+  //   return true;
+  // }
+  // metrics_registry_->ReadMetrics(&response);
+  // response.status.code = cartographer_ros_msgs::StatusCode::OK;
+  // response.status.message = "Successfully read metrics.";
+  return true;
+}
+
+bool Node::HandleDeleteTrajectory(
+    ::cartographer_ros_msgs::DeleteTrajectory::Request& request,
+    ::cartographer_ros_msgs::DeleteTrajectory::Response& response) {
+  std::cout << "HandleDeleteTrajectory" << std::endl;
+  // absl::MutexLock lock(&mutex_);
+  // response.timestamp = ros::Time::now();
+  // if (!metrics_registry_) {
+  //   response.status.code = cartographer_ros_msgs::StatusCode::UNAVAILABLE;
+  //   response.status.message = "Collection of runtime metrics is not activated.";
+  //   return true;
+  // }
+  // metrics_registry_->ReadMetrics(&response);
+  // response.status.code = cartographer_ros_msgs::StatusCode::OK;
+  // response.status.message = "Successfully read metrics.";'
+  return true;
+}
+
 
 void Node::FinishAllTrajectories() {
   absl::MutexLock lock(&mutex_);

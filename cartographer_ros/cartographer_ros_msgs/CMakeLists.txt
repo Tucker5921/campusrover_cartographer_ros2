@@ -51,6 +51,9 @@ add_service_files(
     SubmapQuery.srv
     TrajectoryQuery.srv
     WriteState.srv
+    DeleteTrajectory.srv
+    MapLoad.srv
+    StratTrajectoryFromFile.srv
 )
 
 generate_messages(

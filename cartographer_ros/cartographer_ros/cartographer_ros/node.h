@@ -36,6 +36,9 @@
 #include "cartographer_ros_msgs/FinishTrajectory.h"
 #include "cartographer_ros_msgs/GetTrajectoryStates.h"
 #include "cartographer_ros_msgs/ReadMetrics.h"
+#include "cartographer_ros_msgs/MapLoad.h"
+#include "cartographer_ros_msgs/StratTrajectoryFromFile.h"
+#include "cartographer_ros_msgs/DeleteTrajectory.h"
 #include "cartographer_ros_msgs/StartTrajectory.h"
 #include "cartographer_ros_msgs/StatusResponse.h"
 #include "cartographer_ros_msgs/SubmapEntry.h"
@@ -149,6 +152,18 @@ class Node {
   bool HandleReadMetrics(
       cartographer_ros_msgs::ReadMetrics::Request& request,
       cartographer_ros_msgs::ReadMetrics::Response& response);
+
+  // Start Justin Modifycation 
+  bool HandleMapLoad(
+      cartographer_ros_msgs::MapLoad::Request& request,
+      cartographer_ros_msgs::MapLoad::Response& response);
+  bool HandleStratTrajectoryFromFile(
+        cartographer_ros_msgs::StratTrajectoryFromFile::Request& request,
+        cartographer_ros_msgs::StratTrajectoryFromFile::Response& response);
+  bool HandleDeleteTrajectory(
+        cartographer_ros_msgs::DeleteTrajectory::Request& request,
+        cartographer_ros_msgs::DeleteTrajectory::Response& response);
+  // End Justin Modifycation
 
   // Returns the set of SensorIds expected for a trajectory.
   // 'SensorId::id' is the expected ROS topic name.
