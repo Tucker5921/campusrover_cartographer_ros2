@@ -425,10 +425,12 @@ void PoseGraph2D::UpdateTrajectoryConnectivity(const Constraint& constraint) {
 }
 
 void PoseGraph2D::DeleteTrajectoriesIfNeeded() {
+  std::cout << "***** PoseGraph2D::DeleteTrajectoriesIfNeeded" << std::endl;
   TrimmingHandle trimming_handle(this);
   for (auto& it : data_.trajectories_state) {
     if (it.second.deletion_state ==
         InternalTrajectoryState::DeletionState::WAIT_FOR_DELETION) {
+        std::cout << "***** InternalTrajectoryState::DeletionState::WAIT_FOR_DELETION" << std::endl;
       // TODO(gaschler): Consider directly deleting from data_, which may be
       // more complete.
       auto submap_ids = trimming_handle.GetSubmapIds(it.first);
@@ -608,6 +610,7 @@ void PoseGraph2D::WaitForAllComputations() {
 
 void PoseGraph2D::DeleteTrajectory(const int trajectory_id) {
   {
+    std::cout << "**** PoseGraph2D::DeleteTrajectory" << std::endl;
     absl::MutexLock locker(&mutex_);
     auto it = data_.trajectories_state.find(trajectory_id);
     if (it == data_.trajectories_state.end()) {
@@ -628,11 +631,12 @@ void PoseGraph2D::DeleteTrajectory(const int trajectory_id) {
           InternalTrajectoryState::DeletionState::SCHEDULED_FOR_DELETION);
     data_.trajectories_state.at(trajectory_id).deletion_state =
         InternalTrajectoryState::DeletionState::WAIT_FOR_DELETION;
-    return WorkItem::Result::kDoNotRunOptimization;
+    return WorkItem::Result::kRunOptimization;
   });
 }
 
 void PoseGraph2D::FinishTrajectory(const int trajectory_id) {
+  std::cout << "**** PoseGraph2D::FinishTrajectory" << std::endl;
   AddWorkItem([this, trajectory_id]() LOCKS_EXCLUDED(mutex_) {
     absl::MutexLock locker(&mutex_);
     CHECK(!IsTrajectoryFinished(trajectory_id));

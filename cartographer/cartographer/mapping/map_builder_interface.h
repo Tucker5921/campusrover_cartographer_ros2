@@ -75,6 +75,7 @@ class MapBuilderInterface {
   // Marks the TrajectoryBuilder corresponding to 'trajectory_id' as finished,
   // i.e. no further sensor data is expected.
   virtual void FinishTrajectory(int trajectory_id) = 0;
+  virtual void DeleteTrajectory(int trajectory_id) = 0;
 
   // Fills the SubmapQuery::Response corresponding to 'submap_id'. Returns an
   // error string on failure, or an empty string on success.

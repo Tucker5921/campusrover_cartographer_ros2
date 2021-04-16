@@ -769,7 +769,9 @@ bool Node::HandleStratTrajectoryFromFile(
 bool Node::HandleDeleteTrajectory(
     ::cartographer_ros_msgs::DeleteTrajectory::Request& request,
     ::cartographer_ros_msgs::DeleteTrajectory::Response& response) {
-  std::cout << "HandleDeleteTrajectory" << std::endl;
+  absl::MutexLock lock(&mutex_);    
+  std::cout << "* Node::HandleDeleteTrajectory" << std::endl;
+  map_builder_bridge_.DeleteTrajectory(request.trajectory_id);
   // absl::MutexLock lock(&mutex_);
   // response.timestamp = ros::Time::now();
   // if (!metrics_registry_) {

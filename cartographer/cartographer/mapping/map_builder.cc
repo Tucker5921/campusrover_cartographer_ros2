@@ -176,8 +176,15 @@ int MapBuilder::AddTrajectoryForDeserialization(
 }
 
 void MapBuilder::FinishTrajectory(const int trajectory_id) {
+  std::cout << "***  MapBuilder::FinishTrajectory" << std::endl;
   sensor_collator_->FinishTrajectory(trajectory_id);
   pose_graph_->FinishTrajectory(trajectory_id);
+}
+
+void MapBuilder::DeleteTrajectory(const int trajectory_id) {
+  std::cout << "*** MapBuilder::DeleteTrajectory" << std::endl;
+  // sensor_collator_->DeleteTrajectory(trajectory_id);
+  pose_graph_->DeleteTrajectory(trajectory_id);
 }
 
 std::string MapBuilder::SubmapToProto(

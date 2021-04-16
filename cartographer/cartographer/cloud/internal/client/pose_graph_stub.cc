@@ -156,6 +156,7 @@ void PoseGraphStub::SetLandmarkPose(const std::string& landmark_id,
 }
 
 void PoseGraphStub::DeleteTrajectory(int trajectory_id) {
+  std::cout << "**** PoseGraphStub::DeleteTrajectory" << std::endl;
   proto::DeleteTrajectoryRequest request;
   request.set_client_id(client_id_);
   request.set_trajectory_id(trajectory_id);

@@ -148,6 +148,7 @@ int MapBuilderBridge::AddTrajectory(
 }
 
 void MapBuilderBridge::FinishTrajectory(const int trajectory_id) {
+  std::cout << "** MapBuilderBridge::FinishTrajectory" << std::endl;
   LOG(INFO) << "Finishing trajectory with ID '" << trajectory_id << "'...";
 
   // Make sure there is a trajectory with 'trajectory_id'.
@@ -157,11 +158,11 @@ void MapBuilderBridge::FinishTrajectory(const int trajectory_id) {
 }
 
 void MapBuilderBridge::DeleteTrajectory(const int trajectory_id) {
+  std::cout << "** MapBuilderBridge::DeleteTrajectory" << std::endl;
   LOG(INFO) << "Deleting trajectory with ID '" << trajectory_id << "'...";
-
   // Make sure there is a trajectory with 'trajectory_id'.
   CHECK(GetTrajectoryStates().count(trajectory_id));
-  // map_builder_->DeleteTrajectory(trajectory_id);
+  map_builder_->DeleteTrajectory(trajectory_id);
 
   // sensor_bridges_.erase(trajectory_id);
 }
