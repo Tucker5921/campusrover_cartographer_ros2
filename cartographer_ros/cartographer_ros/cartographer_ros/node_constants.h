@@ -42,7 +42,6 @@ constexpr char kWriteStateServiceName[] = "write_state";
 constexpr char kGetTrajectoryStatesServiceName[] = "get_trajectory_states";
 constexpr char kReadMetricsServiceName[] = "read_metrics";
 constexpr char kMapLoadServiceName[] = "map_load";
-constexpr char kStartTrajectoryFromFileName[] = "cr_start_trajectory";
 constexpr char kDeleteTrajectoryName[] = "delete_trajectory";
 constexpr char kTrajectoryNodeListTopic[] = "trajectory_node_list";
 constexpr char kLandmarkPosesListTopic[] = "landmark_poses_list";
