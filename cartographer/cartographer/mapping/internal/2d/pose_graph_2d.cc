@@ -610,7 +610,6 @@ void PoseGraph2D::WaitForAllComputations() {
 
 void PoseGraph2D::DeleteTrajectory(const int trajectory_id) {
   {
-    std::cout << "**** PoseGraph2D::DeleteTrajectory" << std::endl;
     absl::MutexLock locker(&mutex_);
     auto it = data_.trajectories_state.find(trajectory_id);
     if (it == data_.trajectories_state.end()) {
@@ -636,7 +635,6 @@ void PoseGraph2D::DeleteTrajectory(const int trajectory_id) {
 }
 
 void PoseGraph2D::FinishTrajectory(const int trajectory_id) {
-  std::cout << "**** PoseGraph2D::FinishTrajectory" << std::endl;
   AddWorkItem([this, trajectory_id]() LOCKS_EXCLUDED(mutex_) {
     absl::MutexLock locker(&mutex_);
     CHECK(!IsTrajectoryFinished(trajectory_id));

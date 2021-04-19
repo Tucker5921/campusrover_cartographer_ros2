@@ -102,7 +102,6 @@ mapping::TrajectoryBuilderInterface* MapBuilderStub::GetTrajectoryBuilder(
 }
 
 void MapBuilderStub::FinishTrajectory(int trajectory_id) {
-  std::count << "**** MapBuilderStub::FinishTrajectory" <<std::endl;
   proto::FinishTrajectoryRequest request;
   request.set_client_id(client_id_);
   request.set_trajectory_id(trajectory_id);
