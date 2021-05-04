@@ -23,7 +23,7 @@ rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 
 # abseil-cpp library 
-src/cartographer/scripts/install_abseil.sh
+src/campusrover_cartographer/cartographer/scripts/install_abseil.sh
 sudo apt-get remove ros-${ROS_DISTRO}-abseil-cpp
 
 # Build and install
