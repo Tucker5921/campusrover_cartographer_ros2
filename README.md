@@ -4,6 +4,9 @@
 ``` bash
 # install dependencies
 sudo apt-get update
+# If below Ubuntu 18.04
+sudo apt-get install -y python-wstool python-rosdep ninja-build stow
+# If Ubuntu 20.04
 sudo apt-get install -y python3-wstool python3-rosdep ninja-build stow
 
 # setup the ros workspace
@@ -18,7 +21,8 @@ cd ~/campusrover_cartographer_ws
 wstool update -t src
 
 # Install ROS dependencies
-sudo rosdep init
+# [optional] do it if you not did not run this before
+sudo rosdep init 
 rosdep update
 rosdep install --from-paths src --ignore-src --rosdistro=${ROS_DISTRO} -y
 
