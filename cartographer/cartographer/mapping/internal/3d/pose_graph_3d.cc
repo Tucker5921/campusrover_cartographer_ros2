@@ -615,7 +615,8 @@ void PoseGraph3D::DeleteTrajectory(const int trajectory_id) {
           InternalTrajectoryState::DeletionState::SCHEDULED_FOR_DELETION);
     data_.trajectories_state.at(trajectory_id).deletion_state =
         InternalTrajectoryState::DeletionState::WAIT_FOR_DELETION;
-    return WorkItem::Result::kDoNotRunOptimization;
+    // return WorkItem::Result::kDoNotRunOptimization;
+    return WorkItem::Result::kRunOptimization;
   });
 }
 
