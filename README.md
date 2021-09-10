@@ -16,7 +16,7 @@ wstool init src
 
 # clone source code
 cd ~/campusrover_cartographer_ws/src
-git clone -b ubuntu20.04 git@github.com:IC-lab-campusrover/campusrover_cartographer.git
+git clone git@github.com:IC-lab-campusrover/campusrover_cartographer.git
 cd ~/campusrover_cartographer_ws
 wstool update -t src
 
