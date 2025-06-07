@@ -1,0 +1,2 @@
+campusrover_cartographer/cartographer:campusrover_cartographer/cartographer_ros/cartographer_ros:campusrover_cartographer/cartographer_ros/cartographer_ros_msgs:campusrover_cartographer/cartographer_ros/cartographer_rviz
+-G Ninja -DCATKIN_DEVEL_PREFIX=/home/tucker/campusrover_cartographer_ws/devel_isolated -DCMAKE_INSTALL_PREFIX=/home/tucker/campusrover_cartographer_ws/install_isolated
